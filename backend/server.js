@@ -1,4 +1,3 @@
-
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
@@ -7,12 +6,23 @@ dotenv.config();
 
 const app = express();
 
-// THIS LINE MUST BE HERE — THIS IS WHAT FIXES CORS
+// Allow local dev and Vercel frontend
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://nasapod-five.vercel.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 
-// Optional: see every request in terminal (helps debugging)
+// Debugging requests
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
@@ -51,8 +61,7 @@ app.get('/api/apod', async (req, res) => {
   }
 });
 
-const PORT = 5009;
+const PORT = process.env.PORT || 5009;
 app.listen(PORT, () => {
-  console.log(`nasapod backend RUNNING on http://localhost:${PORT}`);
-  console.log(`CORS enabled for http://localhost:5173`);
+  console.log(`nasapod backend RUNNING on port ${PORT}`);
 });

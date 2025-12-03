@@ -80,7 +80,7 @@ function App() {
         </div>
       )}
 
-      {/* EXPLANATIO */}
+      {/* EXPLANATION */}
       <p className="px-0 mb-0">{data.explanation}</p>
     </div>
   );

@@ -8,7 +8,12 @@ function App() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5009/api/apod')
+    // Use relative path - works in both dev and production
+    const apiUrl = import.meta.env.DEV 
+      ? 'http://localhost:5009/api/apod'  // Dev: your Express server
+      : '/api/apod';  // Production: Vercel serverless function
+
+    axios.get(apiUrl)
       .then(res => setData(res.data))
       .catch(err => {
         console.error("Fetch Error:", err);
@@ -31,10 +36,7 @@ function App() {
         <div className="p-8 text-gray-800 border border-red-200 bg-red-50 rounded-xl">
           <h1 className="text-3xl font-bold">Error Loading APOD Data</h1>
           <p className="mt-2 text-xl">
-            Ensure your backend is running on 
-            <code className="p-1 mx-1 bg-red-200 rounded">http://localhost:5009</code>
-            and CORS allows 
-            <code className="p-1 mx-1 bg-red-200 rounded">http://localhost:5173</code>.
+            Failed to fetch NASA APOD data. Please try again later.
           </p>
         </div>
       </div>
@@ -43,29 +45,15 @@ function App() {
 
   return (
     <div className="items-center min-h-screen">
-
       {/* MAIN TITLE */}
-      <h1
-        className="px-0 mb-0"
-      >
-        NASA 
-      </h1>
-         <h1
-        className="px-0 mb-0"  >
-         Picture of the Day
-      </h1>
+      <h1 className="px-0 mb-0">NASA</h1>
+      <h1 className="px-0 mb-0">Picture of the Day</h1>
 
-        {/* DATE */}
-      <p  className="px-0 mb-0" >
-        {data.date}
-      </p>
+      {/* DATE */}
+      <p className="px-0 mb-0">{data.date}</p>
 
       {/* APOD TITLE */}
-      <h2  className="px-0 mb-0" >
-        {data.title}
-      </h2>
-
-    
+      <h2 className="px-0 mb-0">{data.title}</h2>
 
       {/* MEDIA */}
       {data.media_type === 'video' ? (
@@ -77,7 +65,7 @@ function App() {
           />
         </div>
       ) : (
-        <div className="flex w-full max-w-full mx-auto mb-0 sm:max-w-3xl md:max-w-4xl ">
+        <div className="flex w-full max-w-full px-0 mx-auto mb-0 sm:max-w-3xl md:max-w-4xl sm:px-6">
           <img
             src={data.hdurl}
             alt={data.title}
@@ -93,10 +81,7 @@ function App() {
       )}
 
       {/* EXPLANATION */}
-      <p  className="px-0 mb-0" >
-        {data.explanation}
-      </p>
-
+      <p className="px-0 mb-0">{data.explanation}</p>
     </div>
   );
 }

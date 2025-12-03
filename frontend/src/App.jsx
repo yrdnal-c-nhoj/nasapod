@@ -6,21 +6,19 @@ function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+useEffect(() => {
+  const apiUrl = import.meta.env.DEV
+    ? 'http://localhost:5009/api/apod'            // Dev
+    : 'https://nasapod-wgk6.onrender.com/api/apod'; // Prod
 
-  useEffect(() => {
-    // Use relative path - works in both dev and production
-    const apiUrl = import.meta.env.DEV 
-      ? 'http://localhost:5009/api/apod'  // Dev: your Express server
-      : '/api/apod';  // Production: Vercel serverless function
-
-    axios.get(apiUrl)
-      .then(res => setData(res.data))
-      .catch(err => {
-        console.error("Fetch Error:", err);
-        setError(true);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  axios.get(apiUrl)
+    .then(res => setData(res.data))
+    .catch(err => {
+      console.error("Fetch Error:", err);
+      setError(true);
+    })
+    .finally(() => setLoading(false));
+}, []);
 
   if (loading) {
     return (

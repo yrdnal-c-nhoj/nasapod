@@ -4,31 +4,31 @@ import axios from "axios";
 
 // Loading component
 const Loading = () => (
-  <div className="flex items-center justify-center min-h-screen p-4 text-3xl bg-blue-100 sm:text-4xl">
+  <div className="flex items-center justify-center min-h-screen p-4 text-3xl text-gray-700 bg-white sm:text-4xl">
     Loading NASA APOD...
   </div>
 );
 
 // Error component
 const Error = () => (
-  <div className="flex items-center justify-center min-h-screen p-4 bg-blue-100">
-    <div className="p-8 text-left text-gray-800 border border-red-200 bg-red-50 rounded-xl">
+  <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+    <div className="p-8 text-left text-gray-800 border border-red-200 shadow-lg bg-red-50 rounded-xl">
       <h1 className="text-3xl font-bold">Error Loading APOD Data</h1>
-      <p className="mt-2 text-xl">
-        Failed to fetch NASA data. Please try again later.
-      </p>
+      <p className="mt-2 text-xl">Failed to fetch NASA data. Please try again later.</p>
     </div>
   </div>
 );
 
 // Media component
 const MediaDisplay = ({ mediaType, url, hdurl, title }) => {
+  const mediaClasses = "w-full max-w-full rounded-lg shadow-xl border border-gray-200";
+
   if (mediaType === "video") {
     return (
       <iframe
         src={url}
         title={title}
-        className="w-full h-64 max-w-full rounded shadow-lg sm:h-80 md:h-96"
+        className={`${mediaClasses} aspect-video`}
         allowFullScreen
       />
     );
@@ -36,9 +36,9 @@ const MediaDisplay = ({ mediaType, url, hdurl, title }) => {
 
   return (
     <img
-      src={hdurl}
+      src={hdurl || url}
       alt={title}
-      className="object-contain max-w-full rounded shadow"
+      className={`${mediaClasses} object-contain`}
       loading="lazy"
     />
   );
@@ -51,16 +51,13 @@ function App() {
 
   useEffect(() => {
     const apiUrl = import.meta.env.DEV
-      ? "http://localhost:5009/api/apod" // Dev
-      : "https://nasapod-wgk6.onrender.com/api/apod"; // Prod
+      ? "http://localhost:5009/api/apod"
+      : "https://nasapod-wgk6.onrender.com/api/apod";
 
     axios
       .get(apiUrl)
       .then((res) => setData(res.data))
-      .catch((err) => {
-        console.error("Fetch Error:", err);
-        setError(true);
-      })
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -68,30 +65,27 @@ function App() {
   if (error || !data) return <Error />;
 
   return (
-    <div className="flex justify-center min-h-screen p-4 bg-blue-100">
-      {/* Inner container width matches image */}
-      <div className="flex flex-col items-start w-full max-w-[90vw]">
-        {/* TITLE */}
+    <div className="flex justify-center min-h-screen px-4 py-6 bg-white sm:px-6 lg:px-8 font-body">
+      <div className="w-full max-w-5xl">
+
+        {/* Page Title */}
+        <h1 className="mb-0 text-2xl font-medium tracking-wide text-left text-gray-700 sm:text-4xl font-head">
+          Astronomy Picture of the Day
+        </h1>
+
+        {/* Logo + Date */}
         <div className="flex items-center gap-4 mb-4">
-          <img
-            src="/nasa.webp"
-            alt="NASA Logo"
-            className="w-16 h-auto sm:w-20"
-          />
-          <div>
-            <h1 className="text-4xl font-bold">NASA</h1>
-            <h3 className="text-xl sm:text-2xl">Astronomy Picture of the Day</h3>
-          </div>
+          <img src="/nasa.webp" alt="NASA Logo" className="w-24 h-auto" />
+          <p className="text-2xl text-gray-700">{data.date}</p>
         </div>
 
-        {/* DATE */}
-        <p className="mt-2 text-gray-700">{data.date}</p>
+        {/* Title */}
+        <h2 className="mb-4 text-4xl leading-tight text-gray-950 sm:text-5xl max-w-[50ch] font-semibold font-head">
+          {data.title}
+        </h2>
 
-        {/* APOD TITLE */}
-        <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{data.title}</h2>
-
-        {/* MEDIA */}
-        <div className="flex justify-center w-full my-4">
+        {/* Media */}
+        <div className="w-full mb-6">
           <MediaDisplay
             mediaType={data.media_type}
             url={data.url}
@@ -100,10 +94,11 @@ function App() {
           />
         </div>
 
-        {/* EXPLANATION */}
-        <p className="mt-4 text-gray-800" style={{ maxWidth: "100%" }}>
-          {data.explanation}
-        </p>
+        {/* Explanation aligned with date on laptop, full width on mobile */}
+        <div className="ml-0 md:ml-28 text-lg sm:text-xl leading-normal text-gray-800 max-w-[40ch] font-sans">
+          <h3 className="mb-2 font-sans text-3xl text-gray-500">Explanation</h3>
+          <p className="text-lg leading-relaxed whitespace-pre-line" style={{ fontFamily: 'Georgia, serif' }}>{data.explanation}</p>
+        </div>
       </div>
     </div>
   );

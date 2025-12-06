@@ -75,7 +75,7 @@ function App() {
 
         {/* Logo + Date */}
         <div className="flex items-center gap-4 mb-4">
-          <img src="/nasa.webp" alt="NASA Logo" className="w-24 h-auto" />
+          <img src="/nasa.png" alt="NASA Logo" className="w-24 h-auto" />
           <p className="text-2xl text-gray-700">{data.date}</p>
         </div>
 

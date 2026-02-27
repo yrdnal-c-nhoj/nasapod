@@ -70,7 +70,7 @@ function App() {
 
         {/* Page Title */}
         <h1 className="mb-0 text-2xl font-medium tracking-wide text-left text-gray-700 font-head sm:text-4xl">
-          Astronomy Picture of the Day!
+          Astronomy Picture of the Day
         </h1>
 
         {/* Logo + Date */}

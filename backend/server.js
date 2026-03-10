@@ -3,7 +3,13 @@ import axios from 'axios';
 import cors from 'cors';
 
 const app = express();
-app.use(cors()); // Allows your React app to talk to this server
+app.use(cors());
+
+// --- ADD THIS SECTION ---
+app.get('/healthcheck', (req, res) => {
+  res.status(200).send('Server is alive and kicking!');
+});
+// ------------------------
 
 app.get('/api/apod', async (req, res) => {
   try {

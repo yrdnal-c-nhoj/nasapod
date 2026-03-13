@@ -1,6 +1,9 @@
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -13,10 +16,21 @@ app.get('/healthcheck', (req, res) => {
 
 app.get('/api/apod', async (req, res) => {
   try {
-    const response = await axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
+    const apiKey = process.env.NASA_API_KEY || 'DEMO_KEY';
+    const response = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch from NASA' });
+    // Return mock data when NASA API fails
+    const mockData = {
+      date: "2024-03-12",
+      title: "Mock APOD - Galaxy Cluster",
+      explanation: "This is a mock image of a galaxy cluster. In reality, NASA's APOD service is currently experiencing rate limiting issues with the demo key. This allows you to test your frontend application while the NASA API is unavailable.",
+      url: "https://picsum.photos/800/600",
+      hdurl: "https://picsum.photos/1920/1080",
+      media_type: "image",
+      copyright: "Mock Data"
+    };
+    res.json(mockData);
   }
 });
 

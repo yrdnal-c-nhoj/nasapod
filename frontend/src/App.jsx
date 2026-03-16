@@ -50,7 +50,7 @@ function App() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const apiUrl = "http://localhost:5009/api/apod";
+    const apiUrl = "https://api.nasa.gov/planetary/apod?api_key=fvGyxCEJILLzjbk6u8qIfY21cBvg2dbSB0U8HJ2o";
 
     axios
       .get(apiUrl)
